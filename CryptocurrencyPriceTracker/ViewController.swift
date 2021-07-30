@@ -22,6 +22,17 @@ class ViewController: UIViewController {
         crypto = ["BTC", "ETH", "XRP", "BCH"]
         currency = ["USD", "EUR", "JPY", "CHF"]
     }
+    
+    private func getPrice(crypto: String, currency: String) {
+        guard let url = URL(string: "https://min-api.cryptocompare.com/data/price?fsym=\(crypto)&tsyms=\(currency)") else { return }
+        URLSession.shared.dataTask(with: url) { (data, response, error) in
+            guard let data = data else {
+                print("Failure")
+                return
+            }
+            print("Connected", data)
+        }.resume()
+    }
 }
 
 extension ViewController: UIPickerViewDelegate, UIPickerViewDataSource {
@@ -51,6 +62,6 @@ extension ViewController: UIPickerViewDelegate, UIPickerViewDataSource {
     func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
         let crypto = self.crypto[picker.selectedRow(inComponent: 0)]
         let currency = self.currency[picker.selectedRow(inComponent: 1)]
-        print(crypto, currency)
+        getPrice(crypto: crypto, currency: currency)
     }
 }
